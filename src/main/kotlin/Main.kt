@@ -14,8 +14,10 @@ const val MODE_DECRYPT = "decrypt"
 
 
 fun main(args: Array<String>) {
-    val mode = getModeOrExit(args)
+    checkArgsOrExit(args)
+
     val cipher = CipherFactory().aeadCipher()
+    val mode = args[ARG_MODE]
 
     when (mode) {
         MODE_KEYGEN -> {
@@ -24,7 +26,6 @@ fun main(args: Array<String>) {
         }
 
         else -> {
-            checkEncryptDecryptArgsOrExit(args)
             val i = File(args[ARG_INPUT_FILE])
             val o = File(args[ARG_OUTPUT_FILE])
             val k = File(args[ARG_KEY_FILE])
@@ -40,36 +41,17 @@ fun main(args: Array<String>) {
 }
 
 
-fun getModeOrExit(args: Array<String>): Any {
+fun checkArgsOrExit(args: Array<String>) {
     val mode = args.getOrNull(ARG_MODE) ?: run {
         exitError("Invalid arguments")
     }
     if (!setOf(MODE_KEYGEN, MODE_ENCRYPT, MODE_DECRYPT).contains(mode)) {
         exitError("Invalid mode: $mode")
     }
-    return mode
-}
-
-
-fun checkArgsOrExit(args: Array<String>) {
-    when (args[ARG_MODE]) {
-        MODE_KEYGEN -> if (args.size < 2) {
-            exitError("Invalid arguments for keygen")
-        }
-
+    when (mode) {
+        MODE_KEYGEN -> if (args.size < 2) exitError("Invalid arguments for keygen")
         MODE_ENCRYPT,
-        MODE_DECRYPT -> {
-            if (args.size < 4) {
-                exitError("Invalid arguments for encrypt/decrypt")
-            }
-        }
-    }
-}
-
-
-fun checkEncryptDecryptArgsOrExit(args: Array<String>) {
-    if (args.size < 4) {
-        exitError("Invalid arguments for encrypt/decrypt")
+        MODE_DECRYPT -> if (args.size < 4) exitError("Invalid arguments for encrypt/decrypt")
     }
 }
 
@@ -77,11 +59,6 @@ fun checkEncryptDecryptArgsOrExit(args: Array<String>) {
 fun generateKeyAndExit(cipher: AeadCipher, keyFile: File) {
     val keyBytes = cipher.generateKey()
     keyFile.writeBytes(keyBytes)
-    println(keyBytes.toString())
-    println(keyBytes.decodeToString())
-    println("Generated key length: ${keyBytes.size}")
-    println("Generated key length toString: ${keyBytes.toString().length}")
-    println("Generated key length decodeToString: ${keyBytes.decodeToString().length}")
     exitProcess(0)
 }
 
@@ -91,7 +68,6 @@ fun tryEncryptAndExit(cipher: AeadCipher, inputFile: File, outputFile: File, key
         val plainText = inputFile.readBytes()
         val key = keyFile.readBytes()
         val aad = aadFile.readBytes()
-        println("Encrypt: ${plainText.decodeToString()}, key: ${key.decodeToString()}, aad: ${aad.decodeToString()}")
         val cipherMessage = cipher.encrypt(plainText, key, aad)
         outputFile.writeBytes(cipherMessage)
     } catch (e: Exception) {

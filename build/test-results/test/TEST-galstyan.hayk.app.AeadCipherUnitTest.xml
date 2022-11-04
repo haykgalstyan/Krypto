@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="galstyan.hayk.app.AeadCipherUnitTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-11-03T17:22:27" hostname="GodMachine" time="0.043">
+<testsuite name="galstyan.hayk.app.AeadCipherUnitTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-11-04T16:38:38" hostname="GodMachine" time="0.037">
   <properties/>
-  <testcase name="Test encrypt encrypts()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.038"/>
+  <testcase name="Test encrypt encrypts()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.033"/>
   <testcase name="Dest decryption decrypts with AAD()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.001"/>
-  <testcase name="Test decryption decrypts()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.001"/>
-  <testcase name="Test wrong AAD won't decrypt()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.001"/>
+  <testcase name="Test decryption decrypts()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.002"/>
+  <testcase name="Test wrong AAD won't decrypt()" classname="galstyan.hayk.app.AeadCipherUnitTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
