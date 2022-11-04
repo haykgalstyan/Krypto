@@ -96,7 +96,7 @@ fun exitError(message: String) {
 
 
 fun printHelp() {
-    println("Usages: ")
+    println("Usage: ")
     println("\tModes: ${setOf(MODE_KEYGEN, MODE_ENCRYPT, MODE_DECRYPT).joinToString("/")}")
     println("\tGenerate key: $MODE_KEYGEN keyFile")
     println("\tEncrypt/Decrypt: $MODE_ENCRYPT/$MODE_ENCRYPT keyFile inputFile outputFile aadFile)")
