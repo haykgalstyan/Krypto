@@ -120,6 +120,6 @@ fun printHelp() {
     println("Usage:")
     println("\tModes: ${modes.joinToString("/")}")
     println("\tGenerate key: $MODE_KEYGEN keyFile")
-    println("\tEncrypt/Decrypt: $MODE_ENCRYPT/$MODE_ENCRYPT keyFile inputFile outputFile aadFile)")
-    println("\tXOR keys: $MODE_XOR keyFileA keyFileB outputFile)")
+    println("\tEncrypt/Decrypt: $MODE_ENCRYPT/$MODE_DECRYPT keyFile inputFile outputFile aadFile")
+    println("\tXOR keys: $MODE_XOR keyFileA keyFileB outputFile")
 }
