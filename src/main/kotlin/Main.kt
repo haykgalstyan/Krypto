@@ -1,6 +1,5 @@
 import java.io.File
 import java.lang.Exception
-import kotlin.experimental.xor
 import kotlin.system.exitProcess
 
 const val ARG_MODE = 0
@@ -10,9 +9,10 @@ const val ARG_OUTPUT_FILE = 3
 const val ARG_AAD_FILE = 4
 
 const val MODE_KEYGEN = "keygen"
+const val MODE_XOR = "xor"
 const val MODE_ENCRYPT = "encrypt"
 const val MODE_DECRYPT = "decrypt"
-const val MODE_XOR = "xor"
+val modes = setOf(MODE_KEYGEN, MODE_XOR, MODE_ENCRYPT, MODE_DECRYPT)
 
 
 fun main(args: Array<String>) {
@@ -49,28 +49,19 @@ fun main(args: Array<String>) {
     exitProcess(0)
 }
 
-fun xorAndExit(keyFile1: File, keyFile2: File, o: File) {
-    val k1 = keyFile1.readBytes()
-    val k2 = keyFile2.readBytes()
-    if (k1.size != k2.size) exitError("XOR keys must have the same length")
-
-    val ko = k1 xor k2
-    o.writeBytes(ko)
-    exitProcess(0)
-}
-
 
 fun checkArgsOrExit(args: Array<String>) {
     val mode = args.getOrNull(ARG_MODE) ?: run {
-        exitError("Invalid arguments")
+        exitError("Invalid args, see usages.")
     }
-    if (!setOf(MODE_KEYGEN, MODE_ENCRYPT, MODE_DECRYPT).contains(mode)) {
+    if (!modes.contains(mode)) {
         exitError("Invalid mode: $mode")
     }
     when (mode) {
-        MODE_KEYGEN -> if (args.size < 2) exitError("Invalid arguments for keygen")
+        MODE_KEYGEN -> if (args.size < 2) exitError("Invalid arguments for $MODE_KEYGEN")
+        MODE_XOR -> if (args.size < 3) exitError("Invalid arguments for $MODE_XOR")
         MODE_ENCRYPT,
-        MODE_DECRYPT -> if (args.size < 4) exitError("Invalid arguments for encrypt/decrypt")
+        MODE_DECRYPT -> if (args.size < 4) exitError("Invalid arguments for $MODE_ENCRYPT/$MODE_DECRYPT")
     }
 }
 
@@ -78,6 +69,17 @@ fun checkArgsOrExit(args: Array<String>) {
 fun generateKeyAndExit(cipher: AeadCipher, keyFile: File) {
     val keyBytes = cipher.generateKey()
     keyFile.writeBytes(keyBytes)
+    exitProcess(0)
+}
+
+
+fun xorAndExit(keyFile1: File, keyFile2: File, o: File) {
+    val k1 = keyFile1.readBytes()
+    val k2 = keyFile2.readBytes()
+    if (k1.size != k2.size) exitError("XOR keys must have the same length")
+
+    val ko = k1 xor k2
+    o.writeBytes(ko)
     exitProcess(0)
 }
 
@@ -115,9 +117,9 @@ fun exitError(message: String) {
 
 
 fun printHelp() {
-    println("Usage: ")
-    println("\tModes: ${setOf(MODE_KEYGEN, MODE_ENCRYPT, MODE_DECRYPT).joinToString("/")}")
+    println("Usage:")
+    println("\tModes: ${modes.joinToString("/")}")
     println("\tGenerate key: $MODE_KEYGEN keyFile")
     println("\tEncrypt/Decrypt: $MODE_ENCRYPT/$MODE_ENCRYPT keyFile inputFile outputFile aadFile)")
-    println("\tXOR: $MODE_XOR keyFileA keyFileB outputFile)")
+    println("\tXOR keys: $MODE_XOR keyFileA keyFileB outputFile)")
 }
