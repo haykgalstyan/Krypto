@@ -1,5 +1,4 @@
 import java.io.File
-import java.lang.Exception
 import kotlin.system.exitProcess
 
 const val ARG_MODE = 0
